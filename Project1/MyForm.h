@@ -1,12 +1,13 @@
 #pragma once
+#define _USE_MATH_DEFINES
 #include <math.h>
 #include <time.h>
 #include <stdlib.h>
 
-#define N 500 // Число отрезков для вычисления плотности распределения вероятности 
+#define N 3000 // Число отрезков для вычисления плотности распределения вероятности 
 #define M 100000L // Число экспериментов
 //float sl_vel(float a, float b);
-float f[N];
+
 
 namespace Project1 {
 
@@ -45,6 +46,7 @@ namespace Project1 {
 	private: System::Windows::Forms::DataVisualization::Charting::Chart^ chart1;
 	private: System::Windows::Forms::Button^ button1;
 	private: System::Windows::Forms::TextBox^ textBox1;
+	private: System::Windows::Forms::DataVisualization::Charting::Chart^ chart2;
 	protected:
 
 	private:
@@ -63,10 +65,15 @@ namespace Project1 {
 			System::Windows::Forms::DataVisualization::Charting::ChartArea^ chartArea1 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
 			System::Windows::Forms::DataVisualization::Charting::Legend^ legend1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
 			System::Windows::Forms::DataVisualization::Charting::Series^ series1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
+			System::Windows::Forms::DataVisualization::Charting::ChartArea^ chartArea2 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
+			System::Windows::Forms::DataVisualization::Charting::Legend^ legend2 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
+			System::Windows::Forms::DataVisualization::Charting::Series^ series2 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
 			this->chart1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Chart());
 			this->button1 = (gcnew System::Windows::Forms::Button());
 			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
+			this->chart2 = (gcnew System::Windows::Forms::DataVisualization::Charting::Chart());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->chart1))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->chart2))->BeginInit();
 			this->SuspendLayout();
 			// 
 			// chart1
@@ -104,17 +111,38 @@ namespace Project1 {
 			this->textBox1->Size = System::Drawing::Size(181, 20);
 			this->textBox1->TabIndex = 2;
 			// 
+			// chart2
+			// 
+			chartArea2->Name = L"ChartArea1";
+			this->chart2->ChartAreas->Add(chartArea2);
+			legend2->Name = L"Legend1";
+			this->chart2->Legends->Add(legend2);
+			this->chart2->Location = System::Drawing::Point(693, 2);
+			this->chart2->Name = L"chart2";
+			series2->ChartArea = L"ChartArea1";
+			series2->ChartType = System::Windows::Forms::DataVisualization::Charting::SeriesChartType::Line;
+			series2->Color = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)), static_cast<System::Int32>(static_cast<System::Byte>(128)),
+				static_cast<System::Int32>(static_cast<System::Byte>(0)));
+			series2->Legend = L"Legend1";
+			series2->Name = L"Series1";
+			this->chart2->Series->Add(series2);
+			this->chart2->Size = System::Drawing::Size(658, 353);
+			this->chart2->TabIndex = 3;
+			this->chart2->Text = L"chart2";
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(725, 458);
+			this->ClientSize = System::Drawing::Size(1364, 458);
+			this->Controls->Add(this->chart2);
 			this->Controls->Add(this->textBox1);
 			this->Controls->Add(this->button1);
 			this->Controls->Add(this->chart1);
 			this->Name = L"MyForm";
 			this->Text = L"MyForm";
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->chart1))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->chart2))->EndInit();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -124,58 +152,53 @@ namespace Project1 {
 	}
 	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
 //help
-		float D = 1, a = 0.15, d;
-		float k1, k2, ea;
-		array<float>^ x = gcnew array<float>(N);
-		array<int>^ counts = gcnew array<int>(N);
-
-		k2 = exp(-a);
-		k1 = sqrt(D * (1.0 - k2 * k2));
-
-		x[0] = gauss(0, D);
-		for (int n = 1; n < N; n++) {
-			ea = gauss(0, 1);
-			x[n] = k1 * ea + k2 * x[n - 1];
+		double D = 1, a = 0.15;
+		array<double>^ x = gcnew array<double>(N);
+		array<double>^ ex = gcnew array<double>(N);
+		array<double>^ r = gcnew array<double>(500); // массив для оценки корреляционной функции
+		int N_realiz;// длительность реализации стационарного 
+                     // фрагмента получившегося случайного процесса
+		/*___*/
+		array<double>^ c = gcnew array<double>(500);
+		double aa;
+		int n, P, m, k;
+		for (n = 0; n < N; n++) {
+			ex[n] = gauss(0, 1);
 		}
-
-		// Find the minimum and maximum values in the x array
-		float minValue = x[0];
-		float maxValue = x[0];
-		for (int i = 1; i < N; i++) {
-			if (x[i] < minValue) {
-				minValue = x[i];
+			P = 2. / a;
+			for (k = 0; k <= P; k++)
+			{
+				if (k != 0)
+					c[k] = sqrt(D) / sqrt(M_PI * a) * sin(a * k) / k;
+				else c[k] = sqrt(D) / sqrt(M_PI * a) * a;
 			}
-			if (x[i] > maxValue) {
-				maxValue = x[i];
+			for (n = 0; n < N; n++)
+			{
+				x[n] = 0.0;
+				for (k = -P; k <= P; k++)
+				{
+					if (k < 0) aa = c[-k];
+					else aa = c[k];
+
+					if (((n - k) >= 0) && ((n - k) < N))
+						x[n] = aa * ex[n - k] + x[n];
+				}
 			}
-		}
-
-		d = (maxValue - minValue) / N; // bin width
-
-		// Initialize the counts array to zero
-		for (int i = 0; i < N; i++) {
-			counts[i] = 0;
-		}
-
-		// Generate M samples from the x array and count occurrences within each bin
-		for (int m = 0; m < M; m++) {
-			float sample = x[(int)(rand() % N)];
-			int n = (int)floor((sample - minValue) / d);
-
-			if (n >= 0 && n < N) {
-				counts[n]++;
+			for (n = 0; n < (N - 2 * P); n++)
+				x[n] = x[n + P];
+			N_realiz = N - 2 * P;
+			for (m = 0; m < 500; m++)
+			{
+				r[m] = 0.0;
+				for (n = 0; n < (N_realiz - m - 1); n++)
+					r[m] = r[m] + 1. / (N_realiz - m) * x[n] * x[n + m];
+				chart2->Series[0]->Points->AddXY(m, r[m]);
 			}
-		}
-
-		// Convert counts to probability density
-		array<float>^ f = gcnew array<float>(N);
-		for (int n = 0; n < N; n++) {
-			f[n] = counts[n] / (float)(M * d);
-		}
 
 		// Plot the probability density
 		for (int n = 0; n < N; n++) {
-			chart1->Series[0]->Points->AddXY(minValue + n * d, f[n]);
+			chart1->Series[0]->Points->AddXY(n, x[n]);
+			
 		}
 	}
 
