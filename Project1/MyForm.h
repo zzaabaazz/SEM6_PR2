@@ -152,8 +152,11 @@ namespace Project1 {
 	}
 	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
 //help
-		double D = 1, a = 0.15;
+		double D = 5, a = 0.1;
 		array<double>^ x = gcnew array<double>(N);
+		array<double>^ y = gcnew array<double>(N);
+		array<double>^ y1 = gcnew array<double>(N);
+		array<double>^ y2 = gcnew array<double>(N);
 		array<double>^ ex = gcnew array<double>(N);
 		array<double>^ r = gcnew array<double>(500); // массив для оценки корреляционной функции
 		int N_realiz;// длительность реализации стационарного 
@@ -162,42 +165,26 @@ namespace Project1 {
 		array<double>^ c = gcnew array<double>(500);
 		double aa;
 		int n, P, m, k;
-		for (n = 0; n < N; n++) {
-			ex[n] = gauss(0, 1);
-		}
-			P = 2. / a;
-			for (k = 0; k <= P; k++)
-			{
-				if (k != 0)
-					c[k] = sqrt(D) / sqrt(M_PI * a) * sin(a * k) / k;
-				else c[k] = sqrt(D) / sqrt(M_PI * a) * a;
-			}
-			for (n = 0; n < N; n++)
-			{
-				x[n] = 0.0;
-				for (k = -P; k <= P; k++)
-				{
-					if (k < 0) aa = c[-k];
-					else aa = c[k];
 
-					if (((n - k) >= 0) && ((n - k) < N))
-						x[n] = aa * ex[n - k] + x[n];
-				}
-			}
-			for (n = 0; n < (N - 2 * P); n++)
-				x[n] = x[n + P];
-			N_realiz = N - 2 * P;
+		y1 = randomis();
+		y2 = randomis();
+		for (n = 0; n < N; n++)
+		{
+			y[n] = 2 * y1[n] + 5 * y2[n];
+		}
+
+
 			for (m = 0; m < 500; m++)
 			{
 				r[m] = 0.0;
 				for (n = 0; n < (N_realiz - m - 1); n++)
-					r[m] = r[m] + 1. / (N_realiz - m) * x[n] * x[n + m];
+					r[m] = r[m] + 1. / (N_realiz - m) * y[n] * x[n + m];
 				chart2->Series[0]->Points->AddXY(m, r[m]);
 			}
 
 		// Plot the probability density
 		for (int n = 0; n < N; n++) {
-			chart1->Series[0]->Points->AddXY(n, x[n]);
+			chart1->Series[0]->Points->AddXY(n, y[n]);
 			
 		}
 	}
@@ -226,6 +213,49 @@ namespace Project1 {
 			   ran = u * fac;
 
 			   return ran * sigma + mu;
+		   }
+
+		   array<double>^ randomis() {
+			   double D = 5, a = 0.1;
+			   array<double>^ x = gcnew array<double>(N);
+			   array<double>^ y = gcnew array<double>(N);
+			   array<double>^ ex = gcnew array<double>(N);
+			   array<double>^ r = gcnew array<double>(500); // массив для оценки корреляционной функции
+			   int N_realiz;// длительность реализации стационарного 
+			   // фрагмента получившегося случайного процесса
+  /*___*/
+			   array<double>^ c = gcnew array<double>(500);
+			   double aa;
+			   double rand;
+			   int n, P, m, k;
+			   for (n = 0; n < N; n++) {
+				   ex[n] = gauss(0, 1);
+			   }
+			   P = 2. / a;
+			   for (k = 0; k <= P; k++)
+			   {
+				   if (k != 0)
+					   c[k] = sqrt(D) / sqrt(M_PI * a) * sin(a * k) / k;
+				   else c[k] = sqrt(D) / sqrt(M_PI * a) * a;
+			   }
+			   for (n = 0; n < N; n++)
+			   {
+				   x[n] = 0.0;
+				   for (k = -P; k <= P; k++)
+				   {
+					   if (k < 0) aa = c[-k];
+					   else aa = c[k];
+
+					   if (((n - k) >= 0) && ((n - k) < N))
+						   x[n] = aa * ex[n - k] + x[n];
+				   }
+
+			   }
+			   for (n = 0; n < (N - 2 * P); n++)
+				   x[n] = x[n + P];
+			   N_realiz = N - 2 * P;
+			   return x;
+			   
 		   }
 	};
 }
