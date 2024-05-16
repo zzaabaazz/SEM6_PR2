@@ -152,7 +152,7 @@ namespace Project1 {
 	}
 	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
 //help
-		double D = 1, a = 0.15;
+		double D = 1, a = 0.1;
 		array<double>^ x = gcnew array<double>(N);
 		array<double>^ ex = gcnew array<double>(N);
 		array<double>^ r = gcnew array<double>(500); // массив для оценки корреляционной функции
