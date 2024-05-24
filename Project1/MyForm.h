@@ -272,7 +272,7 @@ namespace Project1 {
 
 		}
 	}
-		   array<double>^ zapazd(array<double>^ y1, int zapaz)
+		   array<double>^ zapazd(array<double>^ y1, int zapaz) //запаздывание
 		   {
 			   array<double>^ y2 = gcnew array<double>(N);
 
