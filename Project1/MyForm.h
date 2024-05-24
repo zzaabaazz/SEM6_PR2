@@ -220,11 +220,12 @@ namespace Project1 {
 	}
 	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
 //help
-		double D = 5, a = 0.1;
+		double D = 7, a = 0.1;
 		array<double>^ x = gcnew array<double>(N);
 		array<double>^ y = gcnew array<double>(N);
 		array<double>^ y1 = gcnew array<double>(N);
 		array<double>^ y2 = gcnew array<double>(N);
+		array<double>^ y3 = gcnew array<double>(N);
 		array<double>^ ex = gcnew array<double>(N);
 		array<double>^ r = gcnew array<double>(500); // массив для оценки корреляционной функции
 		int N_realiz;// длительность реализации стационарного 
@@ -233,13 +234,13 @@ namespace Project1 {
 		array<double>^ c = gcnew array<double>(500);
 		double aa;
 		int n, P, m, k;
-		int zapaz = 1; //запаздывание
 		y1 = randomis();
-		y2 = zapazd(y1, zapaz);
+		y2 = zapazd(y1, 1);
+		y3 = zapazd(y1, 2);
 		
 		for (int n = 0; n < N; n++)
 		{
-			y[n] = 2 * y1[n] + 5 * y2[n];
+			y[n] = y1[n] - 2 * y2[n] + y3[3];
 		}
 
 		P = 2. / a;
@@ -311,7 +312,7 @@ namespace Project1 {
 		   }
 
 		   array<double>^ randomis() {
-			   double D = 5, a = 0.1;
+			   double D = 7, a = 0.1;
 			   array<double>^ x = gcnew array<double>(N);
 			   array<double>^ y = gcnew array<double>(N);
 			   array<double>^ ex = gcnew array<double>(N);
