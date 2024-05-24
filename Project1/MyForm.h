@@ -220,7 +220,7 @@ namespace Project1 {
 	}
 	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
 //help
-		double D = 7, a = 0.1;
+		double D = 5, a = 0.1;
 		array<double>^ x = gcnew array<double>(N);
 		array<double>^ y = gcnew array<double>(N);
 		array<double>^ y1 = gcnew array<double>(N);
@@ -240,7 +240,7 @@ namespace Project1 {
 		
 		for (int n = 0; n < N; n++)
 		{
-			y[n] = y1[n] - 2 * y2[n] + y3[3];
+			y[n] = 2 * y1[n] - 3 * y2[n] + 6 * y3[3];
 		}
 
 		P = 2. / a;
@@ -312,7 +312,7 @@ namespace Project1 {
 		   }
 
 		   array<double>^ randomis() {
-			   double D = 7, a = 0.1;
+			   double D = 5, a = 0.1;
 			   array<double>^ x = gcnew array<double>(N);
 			   array<double>^ y = gcnew array<double>(N);
 			   array<double>^ ex = gcnew array<double>(N);
