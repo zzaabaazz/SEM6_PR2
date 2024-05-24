@@ -137,7 +137,6 @@ namespace Project1 {
 			this->chart2->Size = System::Drawing::Size(575, 287);
 			this->chart2->TabIndex = 3;
 			this->chart2->Text = L"chart2";
-			this->chart2->Click += gcnew System::EventHandler(this, &MyForm::chart2_Click);
 			// 
 			// chart3
 			// 
@@ -197,7 +196,7 @@ namespace Project1 {
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(1410, 788);
+			this->ClientSize = System::Drawing::Size(1207, 640);
 			this->Controls->Add(this->label2);
 			this->Controls->Add(this->label1);
 			this->Controls->Add(this->chart3);
@@ -352,7 +351,5 @@ namespace Project1 {
 			   return x;
 			   
 		   }
-	private: System::Void chart2_Click(System::Object^ sender, System::EventArgs^ e) {
-	}
 };
 }
